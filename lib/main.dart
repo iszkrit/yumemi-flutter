@@ -1,20 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/gen/assets.gen.dart';
+import 'package:yumemi_weather/yumemi_weather.dart';
 
 void main() {
   runApp(const MainApp());
 }
 
+enum WeatherType {
+  sunny,
+  cloudy,
+  rainy,
+  none
+}
+
 class _WeatherIcon extends StatelessWidget {
-  const _WeatherIcon();
+  const _WeatherIcon({required this.weatherType});
+  final WeatherType weatherType;
 
   @override
   Widget build(BuildContext context) {
-    return const AspectRatio(
+    late Widget weatherIcon;
+
+    switch (weatherType) {
+      case WeatherType.sunny:
+        weatherIcon = SvgPicture.asset(Assets.images.sunny);
+      case WeatherType.cloudy:
+        weatherIcon = SvgPicture.asset(Assets.images.cloudy);
+      case WeatherType.rainy:
+        weatherIcon = SvgPicture.asset(Assets.images.rainy);
+      case WeatherType.none:
+        weatherIcon = const Placeholder();
+    }
+
+    return AspectRatio(
       aspectRatio: 1,
-      child: Placeholder(),
+      child: weatherIcon,
     );
   }
 }
+
 class _TemperatureLabels extends StatelessWidget {
   const _TemperatureLabels();
 
@@ -49,21 +74,25 @@ class _TemperatureLabels extends StatelessWidget {
 }
 
 class _WeatherContainer extends StatelessWidget {
-  const _WeatherContainer();
+  const _WeatherContainer({
+    required this.weatherType,
+  });
+  final WeatherType weatherType;
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        _WeatherIcon(),
-        _TemperatureLabels(),
+        _WeatherIcon(weatherType: weatherType),
+        const _TemperatureLabels(),
       ],
     );
   }
 }
 
 class _CommandButtons extends StatelessWidget {
-  const _CommandButtons();
+  const _CommandButtons({required this.reloadWeather});
+  final VoidCallback reloadWeather;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +112,7 @@ class _CommandButtons extends StatelessWidget {
         ),
         Expanded(
           child: TextButton(
-            onPressed: () {},
+            onPressed: reloadWeather,
             child: Text(
               'Reload',
               textAlign: TextAlign.center,
@@ -98,28 +127,67 @@ class _CommandButtons extends StatelessWidget {
   }
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<MainApp> createState() => _MainAppState();
+}
 
-    return const MaterialApp(
+class _MainAppState extends State<MainApp> {
+  YumemiWeather yumemiWeather = YumemiWeather();
+  late WeatherType weatherType;
+
+  void _fetchWeather() {
+    try {
+      final weatherData = yumemiWeather.fetchSimpleWeather();
+
+      setState(() {
+        switch (weatherData) {
+          case 'sunny':
+            weatherType = WeatherType.sunny;
+          case 'cloudy':
+            weatherType = WeatherType.cloudy;
+          case 'rainy':
+            weatherType = WeatherType.rainy;
+          default:
+            weatherType = WeatherType.none;
+            break;
+        }
+      });
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWeather();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       home: Scaffold(
         body: Center(
           child: FractionallySizedBox(
             widthFactor: 0.5,
             child: Column(
               children: [
-                Spacer(),
-                _WeatherContainer(),
+                const Spacer(),
+                _WeatherContainer(
+                  weatherType: weatherType,
+                ),
                 Flexible(
                   child: Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 80,
                       ),
-                      _CommandButtons(),
+                      _CommandButtons(
+                        reloadWeather: _fetchWeather,
+                      ),
                     ],
                   ),
                 ),
