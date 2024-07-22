@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
+class EntryWidget extends StatefulWidget {
+  const EntryWidget({super.key});
+
+  @override
+  EntryWidgetState createState() => EntryWidgetState();
+}
+
+class EntryWidgetState extends State<EntryWidget> {
+  @override
+  void initState() {
+    super.initState();
+    Future(() async {
+      await _navigateToWeatherWidgetAfterDelay();
+    });
+  }
+
+  Future<void> _navigateToWeatherWidgetAfterDelay() async {
+    await SchedulerBinding.instance.endOfFrame;
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    if (mounted) {
+      await Navigator.pushNamed(context, '/weather');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.green,
+      ),
+    );
+  }
+}
