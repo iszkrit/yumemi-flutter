@@ -1,16 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 void main() {
-  runApp(MainApp());
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  MainApp({super.key});
+  const MainApp({super.key});
 
-  final YumemiWeather yumemiWeather = YumemiWeather();
+  static final YumemiWeather yumemiWeather = YumemiWeather();
 
   @override
   Widget build(BuildContext context) {
@@ -140,11 +141,19 @@ class WeatherWidget extends StatefulWidget {
 
   @override
   State<WeatherWidget> createState() => _WeatherWidgetState();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<YumemiWeather>(
+      'yumemiWeather', yumemiWeather,
+    ),);
+  }
 }
 
 class _WeatherWidgetState extends State<WeatherWidget> {
 
-  late WeatherType weatherType;
+  late final WeatherType weatherType;
 
   void _fetchWeather() {
     try {
@@ -206,5 +215,11 @@ class _WeatherWidgetState extends State<WeatherWidget> {
         ),
       ),
     );
+  }
+  
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(EnumProperty<WeatherType>('weatherType', weatherType));
   }
 }
