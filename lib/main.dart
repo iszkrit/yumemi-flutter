@@ -4,25 +4,33 @@ import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
-enum WeatherType {
-  sunny,
-  cloudy,
-  rainy,
-  none
+class MainApp extends StatelessWidget {
+  MainApp({super.key});
+
+  final YumemiWeather yumemiWeather = YumemiWeather();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: WeatherWidget(yumemiWeather: yumemiWeather),
+    );
+  }
 }
+
+enum WeatherType { sunny, cloudy, rainy, none }
 
 class _WeatherIcon extends StatelessWidget {
-  const _WeatherIcon({required this.weatherType});
-  final WeatherType weatherType;
+  const _WeatherIcon(this._weatherType);
+  final WeatherType _weatherType;
 
   @override
   Widget build(BuildContext context) {
     late Widget weatherIcon;
 
-    switch (weatherType) {
+    switch (_weatherType) {
       case WeatherType.sunny:
         weatherIcon = SvgPicture.asset(Assets.images.sunny);
       case WeatherType.cloudy:
@@ -54,8 +62,8 @@ class _TemperatureLabels extends StatelessWidget {
               '** ℃',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                color: Colors.blue,
-              ),
+                    color: Colors.blue,
+                  ),
             ),
           ),
           Expanded(
@@ -63,8 +71,8 @@ class _TemperatureLabels extends StatelessWidget {
               '** ℃',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                color: Colors.red,
-              ),
+                    color: Colors.red,
+                  ),
             ),
           ),
         ],
@@ -74,16 +82,14 @@ class _TemperatureLabels extends StatelessWidget {
 }
 
 class _WeatherContainer extends StatelessWidget {
-  const _WeatherContainer({
-    required this.weatherType,
-  });
-  final WeatherType weatherType;
+  const _WeatherContainer(this._weatherType);
+  final WeatherType _weatherType;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _WeatherIcon(weatherType: weatherType),
+        _WeatherIcon(_weatherType),
         const _TemperatureLabels(),
       ],
     );
@@ -91,8 +97,8 @@ class _WeatherContainer extends StatelessWidget {
 }
 
 class _CommandButtons extends StatelessWidget {
-  const _CommandButtons({required this.reloadWeather});
-  final VoidCallback reloadWeather;
+  const _CommandButtons(this._reloadWeather);
+  final VoidCallback _reloadWeather;
 
   @override
   Widget build(BuildContext context) {
@@ -105,20 +111,20 @@ class _CommandButtons extends StatelessWidget {
               'Close',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                color: Colors.blue,
-              ),
+                    color: Colors.blue,
+                  ),
             ),
           ),
         ),
         Expanded(
           child: TextButton(
-            onPressed: reloadWeather,
+            onPressed: _reloadWeather,
             child: Text(
               'Reload',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                color: Colors.blue,
-              ),
+                    color: Colors.blue,
+                  ),
             ),
           ),
         ),
@@ -127,20 +133,22 @@ class _CommandButtons extends StatelessWidget {
   }
 }
 
-class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+class WeatherWidget extends StatefulWidget {
+
+  const WeatherWidget({required this.yumemiWeather, super.key});
+  final YumemiWeather yumemiWeather;
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  State<WeatherWidget> createState() => _WeatherWidgetState();
 }
 
-class _MainAppState extends State<MainApp> {
-  YumemiWeather yumemiWeather = YumemiWeather();
+class _WeatherWidgetState extends State<WeatherWidget> {
+
   late WeatherType weatherType;
 
   void _fetchWeather() {
     try {
-      final weatherData = yumemiWeather.fetchSimpleWeather();
+      final weatherData = widget.yumemiWeather.fetchSimpleWeather();
 
       setState(() {
         switch (weatherData) {
@@ -157,6 +165,9 @@ class _MainAppState extends State<MainApp> {
       });
     } on Exception catch (e) {
       debugPrint(e.toString());
+      setState(() {
+        weatherType = WeatherType.none;
+      });
     }
   }
 
@@ -176,9 +187,7 @@ class _MainAppState extends State<MainApp> {
             child: Column(
               children: [
                 const Spacer(),
-                _WeatherContainer(
-                  weatherType: weatherType,
-                ),
+                _WeatherContainer(weatherType),
                 Flexible(
                   child: Column(
                     children: [
@@ -186,7 +195,7 @@ class _MainAppState extends State<MainApp> {
                         height: 80,
                       ),
                       _CommandButtons(
-                        reloadWeather: _fetchWeather,
+                        _fetchWeather,
                       ),
                     ],
                   ),
