@@ -5,18 +5,29 @@ import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  MainApp({super.key});
 
-  static final YumemiWeather yumemiWeather = YumemiWeather();
+  final YumemiWeather yumemiWeather = YumemiWeather();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: WeatherWidget(yumemiWeather: yumemiWeather),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty<YumemiWeather>(
+        'yumemiWeather',
+        yumemiWeather,
+      ),
     );
   }
 }
@@ -135,7 +146,6 @@ class _CommandButtons extends StatelessWidget {
 }
 
 class WeatherWidget extends StatefulWidget {
-
   const WeatherWidget({required this.yumemiWeather, super.key});
   final YumemiWeather yumemiWeather;
 
@@ -145,14 +155,16 @@ class WeatherWidget extends StatefulWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<YumemiWeather>(
-      'yumemiWeather', yumemiWeather,
-    ),);
+    properties.add(
+      DiagnosticsProperty<YumemiWeather>(
+        'yumemiWeather',
+        yumemiWeather,
+      ),
+    );
   }
 }
 
 class _WeatherWidgetState extends State<WeatherWidget> {
-
   late final WeatherType weatherType;
 
   void _fetchWeather() {
@@ -216,7 +228,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
       ),
     );
   }
-  
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
