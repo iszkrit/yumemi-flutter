@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +8,26 @@ import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 enum WeatherType { sunny, cloudy, rainy, none }
+
+class WeatherData {
+  WeatherData({
+    required this.weatherCondition,
+    required this.maxTemperature,
+    required this.minTemperature,
+    required this.date,
+  });
+
+  WeatherData.fromJson(Map<String, dynamic> json)
+      : weatherCondition = json['weather_condition'] as String,
+        maxTemperature = json['max_temperature'] as int,
+        minTemperature = json['min_temperature'] as int,
+        date = json['date'] as String;
+
+  final String weatherCondition;
+  final int maxTemperature;
+  final int minTemperature;
+  final String date;
+}
 
 class _WeatherIcon extends StatelessWidget {
   const _WeatherIcon(this._weatherType);
@@ -34,7 +56,9 @@ class _WeatherIcon extends StatelessWidget {
 }
 
 class _TemperatureLabels extends StatelessWidget {
-  const _TemperatureLabels();
+  const _TemperatureLabels(this._maxTemperature, this._minTemperature);
+  final String _maxTemperature;
+  final String _minTemperature;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +68,7 @@ class _TemperatureLabels extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              '** ℃',
+              '$_minTemperature ℃',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: Colors.blue,
@@ -53,7 +77,7 @@ class _TemperatureLabels extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              '** ℃',
+              '$_maxTemperature ℃',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: Colors.red,
@@ -67,15 +91,21 @@ class _TemperatureLabels extends StatelessWidget {
 }
 
 class _WeatherContainer extends StatelessWidget {
-  const _WeatherContainer(this._weatherType);
+  const _WeatherContainer(
+    this._weatherType, 
+    this._maxTemperature, 
+    this._minTemperature,
+  );
   final WeatherType _weatherType;
+  final String _maxTemperature;
+  final String _minTemperature;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         _WeatherIcon(_weatherType),
-        const _TemperatureLabels(),
+        _TemperatureLabels(_maxTemperature, _minTemperature),
       ],
     );
   }
@@ -139,14 +169,24 @@ class WeatherWidget extends StatefulWidget {
 }
 
 class _WeatherWidgetState extends State<WeatherWidget> {
-  late WeatherType weatherType = WeatherType.none;
+  WeatherType weatherType = WeatherType.none;
+  String maxTemperature = '**';
+  String minTemperature = '**';
 
   void _fetchWeather() {
     try {
-      final weatherData = widget.yumemiWeather.fetchThrowsWeather('tokyo');
+      const jsonString = '''
+        {
+            "area": "tokyo",
+            "date": "2020-04-01T12:00:00+09:00"
+        }
+      ''';
+      final weatherJson = widget.yumemiWeather.fetchWeather(jsonString);
+      final weatherDecode = jsonDecode(weatherJson) as Map<String, dynamic>;
+      final weatherData = WeatherData.fromJson(weatherDecode);
 
       setState(() {
-        switch (weatherData) {
+        switch (weatherData.weatherCondition) {
           case 'sunny':
             weatherType = WeatherType.sunny;
           case 'cloudy':
@@ -156,6 +196,8 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           default:
             break;
         }
+        maxTemperature = weatherData.maxTemperature.toString();
+        minTemperature = weatherData.minTemperature.toString();
       });
     } on YumemiWeatherError catch (e) {
       Future(() async {
@@ -199,7 +241,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           child: Column(
             children: [
               const Spacer(),
-              _WeatherContainer(weatherType),
+              _WeatherContainer(weatherType, maxTemperature, minTemperature),
               Flexible(
                 child: Column(
                   children: [
@@ -224,5 +266,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(EnumProperty<WeatherType>('weatherType', weatherType));
+    properties.add(StringProperty('maxTemperature', maxTemperature));
+    properties.add(StringProperty('minTemperature', minTemperature));
   }
 }
