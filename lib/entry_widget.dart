@@ -8,16 +8,17 @@ class EntryWidget extends StatefulWidget {
   EntryWidgetState createState() => EntryWidgetState();
 }
 
-class EntryWidgetState extends State<EntryWidget> {
+class EntryWidgetState extends State<EntryWidget> with AfterDisplayMixin {
   @override
   void initState() {
     super.initState();
     Future(() async {
-      await _navigateToWeatherWidgetAfterDelay();
+      await afterDisplayLayout();
     });
   }
 
-  Future<void> _navigateToWeatherWidgetAfterDelay() async {
+  @override
+  Future<void> afterDisplayLayout() async {
     await SchedulerBinding.instance.endOfFrame;
     await Future<void>.delayed(const Duration(milliseconds: 500));
     if (mounted) {
@@ -33,4 +34,8 @@ class EntryWidgetState extends State<EntryWidget> {
       ),
     );
   }
+}
+
+mixin AfterDisplayMixin on State<EntryWidget> {
+  Future<void> afterDisplayLayout();
 }
