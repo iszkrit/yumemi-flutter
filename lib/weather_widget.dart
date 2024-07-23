@@ -68,7 +68,7 @@ class _TemperatureLabels extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              '$_maxTemperature ℃',
+              '$_minTemperature ℃',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: Colors.blue,
@@ -77,7 +77,7 @@ class _TemperatureLabels extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              '$_minTemperature ℃',
+              '$_maxTemperature ℃',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: Colors.red,
