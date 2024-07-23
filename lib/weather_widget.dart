@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/error_dialog.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
@@ -142,7 +143,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
 
   void _fetchWeather() {
     try {
-      final weatherData = widget.yumemiWeather.fetchSimpleWeather();
+      final weatherData = widget.yumemiWeather.fetchThrowsWeather('tokyo');
 
       setState(() {
         switch (weatherData) {
@@ -153,14 +154,30 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           case 'rainy':
             weatherType = WeatherType.rainy;
           default:
-            weatherType = WeatherType.none;
             break;
         }
       });
+    } on YumemiWeatherError catch (e) {
+      Future(() async {
+        await showDialog<void>(
+          context: context,
+          builder: (context) {
+            return ErrorDialog.yumemiError(
+              errorMessage: e.toString(),
+            );
+          },
+        );
+      });
     } on Exception catch (e) {
-      debugPrint(e.toString());
-      setState(() {
-        weatherType = WeatherType.none;
+      Future(() async {
+        await showDialog<void>(
+          context: context,
+          builder: (context) {
+            return ErrorDialog.otherError(
+              errorMessage: e.toString(),
+            );
+          },
+        );
       });
     }
   }
