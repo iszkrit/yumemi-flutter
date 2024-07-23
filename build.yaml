@@ -1,0 +1,13 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          build_extensions:
+            'lib/model/{{file}}.dart': 'lib/model/generated/{{file}}.freezed.dart'
+          field_rename: snake
+      source_gen|combining_builder:
+        options:
+          build_extensions:
+            'lib/model/{{file}}.dart': 'lib/model/generated/{{file}}.g.dart'
+          field_rename: snake

@@ -5,29 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_training/error_dialog.dart';
 import 'package:flutter_training/gen/assets.gen.dart';
+import 'package:flutter_training/model/weather_data.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 enum WeatherType { sunny, cloudy, rainy, none }
-
-class WeatherData {
-  WeatherData({
-    required this.weatherCondition,
-    required this.maxTemperature,
-    required this.minTemperature,
-    required this.date,
-  });
-
-  WeatherData.fromJson(Map<String, dynamic> json)
-      : weatherCondition = json['weather_condition'] as String,
-        maxTemperature = json['max_temperature'] as int,
-        minTemperature = json['min_temperature'] as int,
-        date = json['date'] as String;
-
-  final String weatherCondition;
-  final int maxTemperature;
-  final int minTemperature;
-  final String date;
-}
 
 class _WeatherIcon extends StatelessWidget {
   const _WeatherIcon(this._weatherType);
