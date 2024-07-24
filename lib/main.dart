@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/first_page.dart';
 import 'package:flutter_training/weather_controller.dart';
@@ -24,17 +23,6 @@ class MainApp extends StatelessWidget {
               weatherController: WeatherController(),
             ),
       },
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty<YumemiWeather>(
-        'yumemiWeather',
-        yumemiWeather,
-      ),
     );
   }
 }

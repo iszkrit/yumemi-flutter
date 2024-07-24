@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ErrorDialog extends StatelessWidget {
@@ -39,10 +38,12 @@ class ErrorDialog extends StatelessWidget {
     );
   }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(StringProperty('errorTitle', errorTitle));
-    properties.add(StringProperty('errorMessage', errorMessage));
+  void showErrorDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return this;
+      },
+    );
   }
 }

@@ -25,22 +25,18 @@ class WeatherController {
     }
   ''';
   WeatherInfo? getWeatherInfo() {
-    try {
-      final weatherJson = yumemiWeather.fetchWeather(jsonString);
-      final weatherDecode = jsonDecode(weatherJson) as Map<String, dynamic>;
-      final weatherData = WeatherData.fromJson(weatherDecode);
+    final weatherJson = yumemiWeather.fetchWeather(jsonString);
+    final weatherDecode = jsonDecode(weatherJson) as Map<String, dynamic>;
+    final weatherData = WeatherData.fromJson(weatherDecode);
 
-      final icon = Weather.fromName(weatherData.weatherCondition).icon;
-      final maxTemperature = weatherData.maxTemperature;
-      final minTemperature = weatherData.minTemperature;
+    final icon = Weather.fromName(weatherData.weatherCondition).icon;
+    final maxTemperature = weatherData.maxTemperature;
+    final minTemperature = weatherData.minTemperature;
 
-      return WeatherInfo(
-          icon: icon,
-          maxTemperature: maxTemperature,
-          minTemperature: minTemperature);
-    } catch (e) {
-      rethrow;
-    }
+    return WeatherInfo(
+        icon: icon,
+        maxTemperature: maxTemperature,
+        minTemperature: minTemperature);
   }
 }
 

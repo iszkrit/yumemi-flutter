@@ -86,7 +86,6 @@ class _CommandButtons extends StatelessWidget {
             onPressed: _onClose?.call,
             child: Text(
               'Close',
-              // textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Colors.blue,
                   ),
@@ -98,7 +97,6 @@ class _CommandButtons extends StatelessWidget {
             onPressed: _onReload?.call,
             child: Text(
               'Reload',
-              // textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Colors.blue,
                   ),
@@ -126,36 +124,24 @@ class _WeatherWidgetState extends State<WeatherPage> {
 
   void _reload() {
     try {
-      widget._weatherController.getWeatherInfo();
+      WeatherInfo? _weatherInfo = widget._weatherController.getWeatherInfo();
+      if (_weatherInfo == null) {
+        return;
+      }
+      setState(() {
+        _weatherIcon = _weatherInfo.icon;
+        _maxTemperature = _weatherInfo.maxTemperature;
+        _minTemperature = _weatherInfo.minTemperature;
+      });
     } on YumemiWeatherError catch (e) {
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return ErrorDialog.yumemiError(
-            errorMessage: e.toString(),
-          );
-        },
-      );
+      if (mounted) {
+        ErrorDialog.yumemiError(errorMessage: e.toString()).showErrorDialog(context);
+      }
     } catch (e) {
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return ErrorDialog.otherError(
-            errorMessage: e.toString(),
-          );
-        },
-      );
+      if (mounted) {
+        ErrorDialog.otherError(errorMessage: e.toString()).showErrorDialog(context);
+      }
     }
-
-    WeatherInfo? _weatherInfo = widget._weatherController.getWeatherInfo();
-    if (_weatherInfo == null) {
-      return;
-    }
-    setState(() {
-      _weatherIcon = _weatherInfo.icon;
-      _maxTemperature = _weatherInfo.maxTemperature;
-      _minTemperature = _weatherInfo.minTemperature;
-    });
   }
 
   void _close() {
