@@ -42,12 +42,11 @@ class _TemperatureLabels extends StatelessWidget {
 }
 
 class _WeatherContainer extends StatelessWidget {
-  const _WeatherContainer(
-    {SvgPicture? weatherIcon, 
-    int? maxTemperature, 
+  const _WeatherContainer({
+    SvgPicture? weatherIcon,
+    int? maxTemperature,
     int? minTemperature,
-  })
-      : _weatherIcon = weatherIcon,
+  })  : _weatherIcon = weatherIcon,
         _maxTemperature = maxTemperature,
         _minTemperature = minTemperature;
   final SvgPicture? _weatherIcon;
@@ -147,7 +146,7 @@ class _WeatherWidgetState extends State<WeatherPage> {
         },
       );
     }
-    
+
     WeatherInfo? _weatherInfo = widget._weatherController.getWeatherInfo();
     if (_weatherInfo == null) {
       return;
@@ -167,34 +166,32 @@ class _WeatherWidgetState extends State<WeatherPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: FractionallySizedBox(
-            widthFactor: 0.5,
-            child: Column(
-              children: [
-                const Spacer(),
-                _WeatherContainer(
-                  weatherIcon: _weatherIcon,
-                  maxTemperature: _maxTemperature,
-                  minTemperature: _minTemperature,
+    return Scaffold(
+      body: Center(
+        child: FractionallySizedBox(
+          widthFactor: 0.5,
+          child: Column(
+            children: [
+              const Spacer(),
+              _WeatherContainer(
+                weatherIcon: _weatherIcon,
+                maxTemperature: _maxTemperature,
+                minTemperature: _minTemperature,
+              ),
+              Flexible(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 80,
+                    ),
+                    _CommandButtons(
+                      onClose: _close,
+                      onReload: _reload,
+                    ),
+                  ],
                 ),
-                Flexible(
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 80,
-                      ),
-                      _CommandButtons(
-                        onClose: _close,
-                        onReload: _reload,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

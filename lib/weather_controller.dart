@@ -10,7 +10,10 @@ class WeatherInfo {
   final int? maxTemperature;
   final int? minTemperature;
 
-  WeatherInfo({required this.icon, required this.maxTemperature, required this.minTemperature});
+  WeatherInfo(
+      {required this.icon,
+      required this.maxTemperature,
+      required this.minTemperature});
 }
 
 class WeatherController {
@@ -31,7 +34,10 @@ class WeatherController {
       final maxTemperature = weatherData.maxTemperature;
       final minTemperature = weatherData.minTemperature;
 
-      return WeatherInfo(icon: icon, maxTemperature: maxTemperature, minTemperature: minTemperature);
+      return WeatherInfo(
+          icon: icon,
+          maxTemperature: maxTemperature,
+          minTemperature: minTemperature);
     } catch (e) {
       rethrow;
     }

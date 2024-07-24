@@ -13,6 +13,6 @@ abstract class WeatherData with _$WeatherData {
     required String date,
   }) = _WeatherData;
 
-  factory WeatherData.fromJson(Map<String, dynamic> json) => 
-    _$WeatherDataFromJson(json);
+  factory WeatherData.fromJson(Map<String, dynamic> json) =>
+      _$WeatherDataFromJson(json);
 }
