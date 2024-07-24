@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_training/entry_widget.dart';
-import 'package:flutter_training/weather_widget.dart';
+import 'package:flutter_training/first_page.dart';
+import 'package:flutter_training/weather_controller.dart';
+import 'package:flutter_training/weather_page.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 void main() {
@@ -18,8 +19,10 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => const EntryWidget(),
-        '/weather': (context) => WeatherWidget(yumemiWeather: yumemiWeather),
+        '/': (context) => const FirstPage(),
+        '/weather': (context) => WeatherPage(
+              weatherController: WeatherController(),
+            ),
       },
     );
   }

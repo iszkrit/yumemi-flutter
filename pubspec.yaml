@@ -22,6 +22,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.11
+  flutter_gen_runner: ^5.6.0
   flutter_test:
     sdk: flutter
   freezed: ^2.5.2
@@ -29,11 +30,15 @@ dev_dependencies:
   source_gen: ^1.5.0
   yumemi_lints: ^2.1.0
 
+flutter_gen:
+  output: lib/gen/ # Optional (default: lib/gen/)
+  lineLength: 80 # Optional (default: 80)
+  
+  integrations:
+    flutter_svg: true
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
-   - assets/images/
-
-assets:
-  - assets/images/
+    - assets/images/
