@@ -18,7 +18,7 @@ class WeatherInfo {
 
 class WeatherController {
   final yumemiWeather = YumemiWeather();
-  final jsonString = '''
+  static const jsonString = '''
     {
         "area": "tokyo",
         "date": "2020-04-01T12:00:00+09:00"

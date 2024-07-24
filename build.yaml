@@ -11,3 +11,14 @@ targets:
           build_extensions:
             'lib/model/{{file}}.dart': 'lib/model/generated/{{file}}.g.dart'
           field_rename: snake
+          ignore_for_file:
+            - type=lint
+            - duplicate_ignore
+      json_serializable:
+        generate_for:
+          include:
+            - "lib/**/model/*.dart"
+            - "lib/**/*provider.dart"
+        options:
+          checked: true
+          explicit_to_json: true
